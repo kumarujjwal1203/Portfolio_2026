@@ -15,9 +15,9 @@ export default function VideoIntro() {
   const rootRef = useRef(null);
   const foregroundRef = useRef(null);
   const backgroundRef = useRef(null);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [playing, setPlaying] = useState(true);
-  const [soundHintVisible, setSoundHintVisible] = useState(true);
+  const [soundHintVisible, setSoundHintVisible] = useState(false);
   const [videoReady, setVideoReady] = useState(true);
 
   useEffect(() => {
@@ -54,11 +54,13 @@ export default function VideoIntro() {
       background.play().catch(() => {});
 
       try {
+        foreground.muted = muted;
         await foreground.play();
         setPlaying(true);
       } catch {
         foreground.muted = true;
         setMuted(true);
+        setSoundHintVisible(true);
         foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
       }
     };
@@ -77,7 +79,7 @@ export default function VideoIntro() {
     observer.observe(root);
 
     return () => observer.disconnect();
-  }, [videoReady]);
+  }, [muted, videoReady]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -129,6 +131,7 @@ export default function VideoIntro() {
 
       foreground.muted = true;
       setMuted(true);
+      setSoundHintVisible(true);
       foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     });
   };
