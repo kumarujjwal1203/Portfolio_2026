@@ -56,7 +56,6 @@ export default function VideoIntro() {
         setPlaying(true);
       } catch {
         foreground.muted = true;
-        setMuted(true);
         foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
       }
     };
@@ -125,12 +124,17 @@ export default function VideoIntro() {
       }
 
       foreground.muted = true;
-      setMuted(true);
       foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     });
   };
 
   const toggleMute = () => {
+    if (!muted && foregroundRef.current?.muted) {
+      foregroundRef.current.muted = false;
+      foregroundRef.current.play().then(() => setPlaying(true)).catch(() => {});
+      return;
+    }
+
     const nextMuted = !muted;
     if (foregroundRef.current) foregroundRef.current.muted = nextMuted;
     setMuted(nextMuted);
