@@ -15,7 +15,7 @@ export default function VideoIntro() {
   const rootRef = useRef(null);
   const foregroundRef = useRef(null);
   const backgroundRef = useRef(null);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(true);
   const [soundHintVisible, setSoundHintVisible] = useState(true);
   const [videoReady, setVideoReady] = useState(true);
