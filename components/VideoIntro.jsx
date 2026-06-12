@@ -15,13 +15,14 @@ export default function VideoIntro() {
   const rootRef = useRef(null);
   const foregroundRef = useRef(null);
   const backgroundRef = useRef(null);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(true);
-  const [soundHintVisible, setSoundHintVisible] = useState(false);
+  const [soundHintVisible, setSoundHintVisible] = useState(true);
   const [videoReady, setVideoReady] = useState(true);
 
   useEffect(() => {
     const ctx = runHeroEntrance(rootRef.current);
+    const hintTimer = window.setTimeout(() => setSoundHintVisible(false), 5200);
     const readinessTimer = window.setTimeout(() => {
       if (foregroundRef.current?.readyState === 0 && backgroundRef.current?.readyState === 0) {
         setVideoReady(false);
@@ -30,6 +31,7 @@ export default function VideoIntro() {
 
     return () => {
       ctx?.kill();
+      window.clearTimeout(hintTimer);
       window.clearTimeout(readinessTimer);
     };
   }, []);
@@ -44,14 +46,21 @@ export default function VideoIntro() {
       setPlaying(false);
     };
 
-    const playVideos = () => {
+    const playVideos = async () => {
       const foreground = foregroundRef.current;
       const background = backgroundRef.current;
       if (!foreground || !background || !videoReady) return;
 
-      Promise.allSettled([foreground.play(), background.play()]).then(([foregroundResult]) => {
-        setPlaying(foregroundResult.status === 'fulfilled');
-      });
+      background.play().catch(() => {});
+
+      try {
+        await foreground.play();
+        setPlaying(true);
+      } catch {
+        foreground.muted = true;
+        setMuted(true);
+        foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      }
     };
 
     const observer = new IntersectionObserver(
@@ -72,7 +81,7 @@ export default function VideoIntro() {
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || muted) return undefined;
+    if (!root) return undefined;
 
     const startWithSound = () => {
       const foreground = foregroundRef.current;
@@ -80,6 +89,8 @@ export default function VideoIntro() {
       if (!foreground || !background) return;
 
       foreground.muted = false;
+      setMuted(false);
+      setSoundHintVisible(false);
       Promise.allSettled([foreground.play(), background.play()]).then(([foregroundResult]) => {
         setPlaying(foregroundResult.status === 'fulfilled');
       });
@@ -92,7 +103,7 @@ export default function VideoIntro() {
       root.removeEventListener('pointerdown', startWithSound);
       root.removeEventListener('touchstart', startWithSound);
     };
-  }, [muted]);
+  }, []);
 
   const handleVideoError = () => {
     setVideoReady(false);
@@ -111,7 +122,14 @@ export default function VideoIntro() {
     }
 
     Promise.allSettled([foreground.play(), background.play()]).then(([foregroundResult]) => {
-      setPlaying(foregroundResult.status === 'fulfilled');
+      if (foregroundResult.status === 'fulfilled') {
+        setPlaying(true);
+        return;
+      }
+
+      foreground.muted = true;
+      setMuted(true);
+      foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     });
   };
 
