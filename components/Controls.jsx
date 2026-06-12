@@ -5,7 +5,6 @@ import styles from './VideoIntro.module.css';
 export default function Controls({
   muted,
   playing,
-  soundHintVisible,
   videoReady,
   onToggleMute,
   onTogglePlay
@@ -20,7 +19,6 @@ export default function Controls({
       <button className={styles.controlButton} type="button" onClick={onToggleMute} aria-label={muted ? 'Unmute video' : 'Mute video'}>
         {muted ? <MutedIcon /> : <SoundIcon />}
       </button>
-      <span className={`${styles.soundHint} ${soundHintVisible ? styles.soundHintVisible : ''}`}>Tap for sound</span>
     </div>
   );
 }

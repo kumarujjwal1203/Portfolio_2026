@@ -17,12 +17,10 @@ export default function VideoIntro() {
   const backgroundRef = useRef(null);
   const [muted, setMuted] = useState(false);
   const [playing, setPlaying] = useState(true);
-  const [soundHintVisible, setSoundHintVisible] = useState(false);
   const [videoReady, setVideoReady] = useState(true);
 
   useEffect(() => {
     const ctx = runHeroEntrance(rootRef.current);
-    const hintTimer = window.setTimeout(() => setSoundHintVisible(false), 5200);
     const readinessTimer = window.setTimeout(() => {
       if (foregroundRef.current?.readyState === 0 && backgroundRef.current?.readyState === 0) {
         setVideoReady(false);
@@ -31,7 +29,6 @@ export default function VideoIntro() {
 
     return () => {
       ctx?.kill();
-      window.clearTimeout(hintTimer);
       window.clearTimeout(readinessTimer);
     };
   }, []);
@@ -60,7 +57,6 @@ export default function VideoIntro() {
       } catch {
         foreground.muted = true;
         setMuted(true);
-        setSoundHintVisible(true);
         foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
       }
     };
@@ -92,7 +88,6 @@ export default function VideoIntro() {
 
       foreground.muted = false;
       setMuted(false);
-      setSoundHintVisible(false);
       Promise.allSettled([foreground.play(), background.play()]).then(([foregroundResult]) => {
         setPlaying(foregroundResult.status === 'fulfilled');
       });
@@ -131,7 +126,6 @@ export default function VideoIntro() {
 
       foreground.muted = true;
       setMuted(true);
-      setSoundHintVisible(true);
       foreground.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
     });
   };
@@ -140,7 +134,6 @@ export default function VideoIntro() {
     const nextMuted = !muted;
     if (foregroundRef.current) foregroundRef.current.muted = nextMuted;
     setMuted(nextMuted);
-    if (!nextMuted) setSoundHintVisible(false);
   };
 
   return (
@@ -184,7 +177,6 @@ export default function VideoIntro() {
       <Controls
         muted={muted}
         playing={playing}
-        soundHintVisible={soundHintVisible}
         videoReady={videoReady}
         onToggleMute={toggleMute}
         onTogglePlay={togglePlay}
