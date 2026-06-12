@@ -252,7 +252,7 @@ function ProjectStackCard({ project, index }) {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.18 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative overflow-hidden rounded-[1.6rem] border-2 border-slate-200/70 bg-[#080808] p-4 shadow-2xl ${meta.glow} transition-colors duration-300 hover:border-white/95 sm:rounded-[2rem] sm:p-7 md:sticky lg:rounded-[2.8rem] lg:p-10`}
+      className={`group sticky overflow-hidden rounded-[1.6rem] border-2 border-slate-200/70 bg-[#080808] p-4 shadow-2xl ${meta.glow} transition-colors duration-300 hover:border-white/95 sm:rounded-[2rem] sm:p-7 lg:rounded-[2.8rem] lg:p-10`}
     >
       <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
         <div className="pointer-events-none absolute inset-0 bg-[#080808]" />
@@ -329,7 +329,7 @@ function ProjectStackCard({ project, index }) {
 
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="relative z-[12] overflow-hidden bg-[#0a0a0a] px-4 py-20 text-white sm:px-8 sm:py-24 md:overflow-visible lg:px-16 lg:py-32">
+    <section id="projects" className="relative z-[12] overflow-visible bg-[#0a0a0a] px-4 py-20 text-white sm:px-8 sm:py-24 lg:px-16 lg:py-32">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(163,230,53,0.08),transparent_30rem),radial-gradient(circle_at_78%_20%,rgba(217,70,239,0.08),transparent_28rem)]" />
       <div className="relative mx-auto max-w-7xl">
         <motion.div
@@ -345,7 +345,7 @@ export default function ProjectsSection() {
           </h2>
         </motion.div>
 
-        <div className="grid gap-12 pb-20 lg:gap-16 lg:pb-[35vh]">
+        <div className="grid gap-8 pb-[45vh] sm:gap-12 lg:gap-16 lg:pb-[35vh]">
           {projects.map((project, index) => (
             <ProjectStackCard project={project} index={index} key={project.name} />
           ))}
