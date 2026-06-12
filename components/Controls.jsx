@@ -13,7 +13,12 @@ export default function Controls({
   if (!videoReady) return null;
 
   return (
-    <div className={styles.controls} data-controls>
+    <div
+      className={styles.controls}
+      data-controls
+      onPointerDown={(event) => event.stopPropagation()}
+      onTouchStart={(event) => event.stopPropagation()}
+    >
       <button className={styles.controlButton} type="button" onClick={onTogglePlay} aria-label={playing ? 'Pause video' : 'Play video'}>
         {playing ? <PauseIcon /> : <PlayIcon />}
       </button>

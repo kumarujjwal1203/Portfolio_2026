@@ -131,6 +131,19 @@ export default function VideoIntro() {
   };
 
   const toggleMute = () => {
+    if (soundHintVisible) {
+      if (foregroundRef.current) foregroundRef.current.muted = false;
+      setMuted(false);
+      setSoundHintVisible(false);
+      Promise.allSettled([
+        foregroundRef.current?.play(),
+        backgroundRef.current?.play()
+      ]).then(([foregroundResult]) => {
+        setPlaying(foregroundResult?.status === 'fulfilled');
+      });
+      return;
+    }
+
     if (!muted && foregroundRef.current?.muted) {
       foregroundRef.current.muted = false;
       setSoundHintVisible(false);
