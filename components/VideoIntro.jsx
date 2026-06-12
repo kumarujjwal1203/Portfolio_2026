@@ -17,6 +17,7 @@ export default function VideoIntro() {
   const backgroundRef = useRef(null);
   const [muted, setMuted] = useState(false);
   const [playing, setPlaying] = useState(true);
+  const [soundHintVisible, setSoundHintVisible] = useState(true);
   const [videoReady, setVideoReady] = useState(true);
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function VideoIntro() {
 
       foreground.muted = false;
       setMuted(false);
+      setSoundHintVisible(false);
       Promise.allSettled([foreground.play(), background.play()]).then(([foregroundResult]) => {
         setPlaying(foregroundResult.status === 'fulfilled');
       });
@@ -131,6 +133,7 @@ export default function VideoIntro() {
   const toggleMute = () => {
     if (!muted && foregroundRef.current?.muted) {
       foregroundRef.current.muted = false;
+      setSoundHintVisible(false);
       foregroundRef.current.play().then(() => setPlaying(true)).catch(() => {});
       return;
     }
@@ -138,6 +141,7 @@ export default function VideoIntro() {
     const nextMuted = !muted;
     if (foregroundRef.current) foregroundRef.current.muted = nextMuted;
     setMuted(nextMuted);
+    if (!nextMuted) setSoundHintVisible(false);
   };
 
   return (
@@ -181,6 +185,7 @@ export default function VideoIntro() {
       <Controls
         muted={muted}
         playing={playing}
+        soundHintVisible={soundHintVisible}
         videoReady={videoReady}
         onToggleMute={toggleMute}
         onTogglePlay={togglePlay}
